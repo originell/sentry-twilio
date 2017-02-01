@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
 
-from sentry.plugins.bases import notify
+from sentry.plugins.bases.notify import NotifyPlugin
 from twilio.rest import Client
 
 
-class TwilioPlugin(notify.NotificationPlugin):
+class TwilioPlugin(NotifyPlugin):
     author = 'Luis Nell'
     author_url = 'https://github.com/originell/sentry-twilio'
     version = '1.0'
@@ -12,8 +12,9 @@ class TwilioPlugin(notify.NotificationPlugin):
         ('Bug Tracker', 'https://github.com/originell/sentry-twilio/issues'),
         ('Source', 'https://github.com/originell/sentry-twilio'),
     ]
-    conf_key = 'twilio'
     title = 'Twilio'
+    conf_key = 'twilio'
+    conf_title = title
     slug = 'twilio'
     description = 'Send notifications via Twilio Programmable SMS.'
 
@@ -36,8 +37,8 @@ class TwilioPlugin(notify.NotificationPlugin):
                 and bool(self.get_option('auth_token', project))
                 and bool(self.get_option('phone_number', project)))
 
-    def get_config(self, project, **kwargs):
-        auth_token_key = self.get_option('auth_token', project)
+    def get_config(self, **kwargs):
+        auth_token_key = self.get_option('auth_token', kwargs['project'])
         auth_token = get_secret_field_config('auth_token',
                                              'Your Twilio Auth Token.',
                                              include_prefix=True)
@@ -71,11 +72,8 @@ class TwilioPlugin(notify.NotificationPlugin):
             },
         ]
 
-    def notify(self, notification):
-        event = notification.event
-        group = event.group
+    def notify_users(self, group, event, fail_silently=False):
         project = group.project
-
         if not self.is_configured(project):
             return
 
