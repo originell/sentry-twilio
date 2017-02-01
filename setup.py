@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 VERSION = '1.0'
 
 install_requires = [
-    'twilio>=6.0.0rc10',
+    'twilio==6.0.0rc10',
 ]
 
 
