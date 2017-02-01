@@ -1,2 +1,3 @@
 # sentry-twilio
-Sentry Notification plugin for Twilio Programmable SMS
+
+Sentry Notification plugin for Twilio Programmable SMS.
