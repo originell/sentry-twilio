@@ -4,7 +4,7 @@ from sentry.plugins.bases import notify
 from twilio.rest import Client
 
 
-class TwilioPlugin(object):
+class TwilioPlugin(notify.NotificationPlugin):
     author = 'Luis Nell'
     author_url = 'https://github.com/originell/sentry-twilio'
     version = '1.0'
