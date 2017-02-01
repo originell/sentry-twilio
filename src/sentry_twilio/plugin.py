@@ -18,33 +18,12 @@ class TwilioPlugin(NotifyPlugin):
     slug = 'twilio'
     description = 'Send notifications via Twilio Programmable SMS.'
 
-    def get_secret_field_config(secret, help_text, **kwargs):
-        # shamelessly taken from the official sentry-plugins repo
-        include_prefix = kwargs.pop('include_prefix', False)
-        has_saved_value = bool(secret)
-        saved_text = 'Only enter a new value if you wish to update the existing one. '
-        context = {
-            'type': 'secret',
-            'has_saved_value': has_saved_value,
-            'prefix': (secret or '')[:4] if include_prefix else '',
-            'required': not has_saved_value,
-            'help': '%s%s' % ((saved_text if has_saved_value else ''), help_text)
-        }
-        context.update(kwargs)
-        return context
-
     def is_configured(self, project):
         return (bool(self.get_option('account_sid', project))
                 and bool(self.get_option('auth_token', project))
                 and bool(self.get_option('phone_number', project)))
 
     def get_config(self, **kwargs):
-        auth_token_key = self.get_option('auth_token', kwargs['project'])
-        auth_token = self.get_secret_field_config(auth_token_key,
-                                                  'Your Twilio Auth Token.',
-                                                  name='auth_token',
-                                                  label='Auth Token',
-                                                  include_prefix=True)
         return [
             {
                 'name': 'account_sid',
@@ -54,7 +33,14 @@ class TwilioPlugin(NotifyPlugin):
                 'required': True,
                 'help': 'Your Twilio Account SID.',
             },
-            auth_token,
+            {
+                'name': 'auth_token',
+                'label': 'Auth Token',
+                'type': 'secret',
+                'placeholder': 'e.g. AA0000eeee0000000cc00000b00eeccc00',
+                'required': True,
+                'help': 'Your Twilio Auth Token.',
+            },
             {
                 'name': 'phone_number',
                 'label': 'SMS Number',
