@@ -18,8 +18,9 @@ class TwilioPlugin(NotifyPlugin):
     slug = 'twilio'
     description = 'Send notifications via Twilio Programmable SMS.'
 
-    def get_secret_field_config(secret, help_text, include_prefix=False, **kwargs):
+    def get_secret_field_config(secret, help_text, **kwargs):
         # shamelessly taken from the official sentry-plugins repo
+        include_prefix = kwargs.pop('include_prefix', False)
         has_saved_value = bool(secret)
         saved_text = 'Only enter a new value if you wish to update the existing one. '
         context = {
@@ -39,8 +40,10 @@ class TwilioPlugin(NotifyPlugin):
 
     def get_config(self, **kwargs):
         auth_token_key = self.get_option('auth_token', kwargs['project'])
-        auth_token = self.get_secret_field_config('auth_token',
+        auth_token = self.get_secret_field_config(auth_token_key,
                                                   'Your Twilio Auth Token.',
+                                                  name='auth_token',
+                                                  label='Auth Token',
                                                   include_prefix=True)
         return [
             {
