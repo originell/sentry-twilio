@@ -39,9 +39,9 @@ class TwilioPlugin(NotifyPlugin):
 
     def get_config(self, **kwargs):
         auth_token_key = self.get_option('auth_token', kwargs['project'])
-        auth_token = get_secret_field_config('auth_token',
-                                             'Your Twilio Auth Token.',
-                                             include_prefix=True)
+        auth_token = self.get_secret_field_config('auth_token',
+                                                  'Your Twilio Auth Token.',
+                                                  include_prefix=True)
         return [
             {
                 'name': 'account_sid',
